@@ -1,0 +1,30 @@
+{
+  "HomePage": {
+    "title": "pneumonia Prediction & AI Assistance",
+    "description": "Upload an image for AI-powered Pneumonia detection and chat for insights.",
+    "upload_prompt": "Drag & Drop or Click to Upload",
+    "chat_title": "Chat with AI Assistant",
+    "chat_description": "Ask questions about foot ulcers and receive AI-powered insights.",
+    "no_messages": "No messages yet. Start the conversation!",
+    "placeholder": "Type a message...",
+    "upload_success": "File uploaded successfully!"
+  },
+  "questions": {
+      "Title" : "Please answer the following questions to help us better understand your condition.",
+      "Age": "What is your age?",
+      "iron_deficiency": "Do you have iron deficiency?",
+      "chronic_obstructive_pulmonary_disease": "Do you have chronic obstructive pulmonary disease (COPD)?",
+      "sepsis": "Do you have sepsis?",
+      "cerebrovascular_disease": "Do you have cerebrovascular disease?",
+      "cardiorespitory_failure": "Do you have cardiorespiratory failure?",
+      "dementia": "Do you have dementia?",
+      "protein_calorie_malnutrition": "Do you have protein-calorie malnutrition?",
+      "vascular_disease": "Do you have vascular disease?",
+      "chronic_lung_disorder": "Do you have chronic lung disorders?",
+      "parkinson": "Do you have Parkinson’s disease?",
+      "tracheostomy": "Have you ever had a tracheostomy?",
+      "history_of_pneumonia": "Have you ever had pneumonia?",
+      "hypertension": "Do you have hypertension?",
+      "gender_Male": "What is your gender?"
+    }
+}
