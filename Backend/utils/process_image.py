@@ -1,41 +1,55 @@
-# utils.py
-import tensorflow as tf
-import numpy as np
-from keras_preprocessing.image import load_img, img_to_array  # Updated import
+import torch
+import torchvision.models as models
+import torchvision.transforms as transforms
 from PIL import Image
 import io
+import numpy as np
 
-# Load the .h5 model
-model_path = r"C:\Users\HP\Desktop\Atharva\Freelance\Pneumonia-detection\Backend\public\pneumonia_detection_ai_version_3.h5"  # Path to your model
-model = tf.keras.models.load_model(model_path)
+# Step 1: Load the fine-tuned ResNet-18 model
+model = models.resnet18(pretrained=False)
+model.fc = torch.nn.Linear(in_features=512, out_features=2)  # Adjust output for 2 classes
+
+# Step 2: Load model weights
+model_path = "public/chest_xray_pneumonia_model.pth"  # Ensure this file exists
+model.load_state_dict(torch.load(model_path, map_location=torch.device("cpu")))
+model.eval()  # Set model to evaluation mode
+
+# Define preprocessing transformations (same as training)
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),  # Resize to model's expected input size
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+])
 
 def preprocess_image(image_file: io.BytesIO):
     """
-    Function to preprocess the image:
+    Preprocess the input image:
     - Convert to grayscale
-    - Resize to model's input size
-    - Normalize the image
+    - Resize to model input (224x224)
+    - Normalize using ImageNet mean/std
+    - Add batch dimension for inference
     """
-    # Open the image file using Pillow
     image = Image.open(image_file)
     
-    # Convert image to grayscale
-    image = image.convert('L')
+    # Convert to RGB (since ResNet expects 3-channel input)
+    image = image.convert("RGB")
     
-    # Resize image to match model's input shape
-    img_height, img_width = 200, 200  # Your model's input size
-    image = image.resize((img_width, img_height))
-
-    # Convert image to numpy array
-    image_array = img_to_array(image)
-    image_array = image_array / 255.0  # Normalize to [0, 1]
-    image_array = np.expand_dims(image_array, axis=0)  # Add batch dimension
-    image_array = np.expand_dims(image_array, axis=-1)  # Add channel dimension for grayscale
-    return image_array
+    # Apply transformations
+    image_tensor = transform(image).unsqueeze(0)  # Add batch dimension
+    
+    return image_tensor
 
 def predict_image(processed_image):
     """
-    Function to predict the class of the image using the pre-loaded model.
+    Predict the class of the image using the ResNet model.
     """
-    predictions = model.predict(processed_image)
-    return predictions
+    with torch.no_grad():
+        output = model(processed_image)
+    
+    # Get predicted class index
+    predicted_class = torch.argmax(output, dim=1).item()
+
+    # Class label mapping
+    # class_labels = {0: "Normal (Healthy)", 1: "Pneumonia"}
+    
+    return predicted_class

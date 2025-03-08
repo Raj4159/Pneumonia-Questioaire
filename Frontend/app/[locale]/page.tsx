@@ -40,17 +40,17 @@ export default function UploadPage() {
     const handlePrediction = async (imageFile: File)=>{
         setIsLoading(true);
         const formData = new FormData();
-        formData.append('file', imageFile);
+        formData.append('image', imageFile);
         try{
-            const response = await axios.post("http://localhost:8000/predict", formData,{
+            const response = await axios.post("http://localhost:8000/api/predict/", formData,{
                 headers: {
                     "Content-Type": "multipart/form-data",
                 }
             });
-            if(response.data.success){
+            if ("prediction" in response.data) {
                 setPrediction(response.data.prediction);
-            } else{
-                console.error("Prediction failed", response.data.error);
+            } else {
+                console.error("Prediction failed", response.data.error || "Unknown error");
             }
         } catch (error){
             console.error("Error Uploading file", error);
@@ -124,11 +124,20 @@ export default function UploadPage() {
                         )}
                         {prediction !== null && !isLoading && (
                             <p className="mt-4 text-center text-lg font-medium text-white">
-                                Prediction: {prediction === 1 ? "Normal (Healthy Skin)" : "Ulcer is present"}
+                                Prediction: {prediction === 1 ? "Pneumonia Detected" : "No Pneumonia Detected"}
                             </p>
                         )}
                     </CardContent>
                 </Card>
+                {/* Next Button - Positioned to the right */}
+                <div className="flex justify-end w-full">
+                    <Button
+                        onClick={() => router.push(`/${locale}/question`)}
+                        className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-2 rounded-lg transition-all duration-300 shadow-md"
+                    >
+                        Next
+                    </Button>
+                </div>
                 <div className="flex justify-center mt-4">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, File, UploadFile
 from fastapi.responses import JSONResponse
-# from utils.process_image import preprocess_image, predict_image
+from utils.process_image import preprocess_image, predict_image
 import io
 
 # Define the router
@@ -9,18 +9,19 @@ router = APIRouter()
 @router.post("/predict/")
 async def predict(image: UploadFile = File(...)):
     try:
-        # Read image content from the uploaded file
         image_content = await image.read()
-        
-        # # Preprocess the uploaded image
-        # processed_image = preprocess_image(io.BytesIO(image_content))
-        
-        # # Make prediction
-        # predictions = predict_image(processed_image)
-        return {"0.8"}         
-        # Return the prediction
-        return JSONResponse(content={"predictions": predictions.tolist()})
-    except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=400)
+        if not image_content:
+            return JSONResponse(content={"error": "No image received"}, status_code=400)
 
+        print(f"Received image: {image.filename}, Size: {len(image_content)} bytes")
+
+        processed_image = preprocess_image(io.BytesIO(image_content))
+        predicted_class = predict_image(processed_image)
+
+        print(f"Prediction: {predicted_class}")  # Debugging Line
+
+        return JSONResponse(content={"prediction": int(predicted_class)})
+    except Exception as e:
+        print(f"Error: {str(e)}")  # Debugging Line
+        return JSONResponse(content={"error": str(e)}, status_code=400)
 
