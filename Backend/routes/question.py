@@ -4,7 +4,7 @@ import joblib
 import pandas as pd
 
 # Load model
-model_path = r"E:\Pneumonia\Pneumonia_Questioaire\Backend\public\best_pneumonia_model_random_forest.pkl"
+model_path = r"C:\Users\athar\OneDrive\Desktop\Atharva\Github\Frelance\pneumonia\Pneumonia-Questioaire\Backend\public\best_pneumonia_model_random_forest.pkl"
 best_model_rf = joblib.load(model_path)
 
 question_router = APIRouter()
