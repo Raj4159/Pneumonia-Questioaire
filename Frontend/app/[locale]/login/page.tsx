@@ -34,7 +34,7 @@ export default function LoginPage() {
       const response = await axios.post("http://localhost:8000/auth/login", data);
   
       if (response.status === 200 && response.data.message === "Login successful") {
-        router.push(`/${locale}/question`);
+        router.push(`/${locale}/history`);
       } else {
         setApiError("Check your login details");
       }
